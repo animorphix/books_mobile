@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_books_app/services/nyt/nyt_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/auth_provider.dart';
 
@@ -10,6 +11,14 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
+
+    @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(nytBooksProvider.notifier).loadBooks();
+    });
+  }
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 

@@ -1,3 +1,4 @@
+// providers/nyt_books_provider.dart
 import 'package:flutter_books_app/services/nyt/nyt_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -28,11 +29,20 @@ class NytBooksState {
 class NytBooksNotifier extends StateNotifier<NytBooksState> {
   NytBooksNotifier() : super(NytBooksState());
 
-  Future<void> loadBooks([String listName = 'hardcover-fiction']) async {
+  /// Загрузка книг из NYT
+  Future<void> loadBooks({String listName = 'hardcover-fiction'}) async {
     try {
+      // Ставим флаг isLoading, убираем ошибку
       state = state.copyWith(isLoading: true, error: null);
-      final books = await NytService.fetchBestSellerBooks(listName: listName);
-      state = state.copyWith(isLoading: false, books: books);
+      
+      // Делаем запрос к NYT
+      final fetched = await NytService.fetchBestSellerBooks(listName: listName);
+      
+      // Записываем в state
+      state = state.copyWith(
+        isLoading: false,
+        books: fetched,
+      );
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
@@ -42,6 +52,8 @@ class NytBooksNotifier extends StateNotifier<NytBooksState> {
   }
 }
 
-final nytBooksProvider = StateNotifierProvider<NytBooksNotifier, NytBooksState>(
-  (ref) => NytBooksNotifier(),
-);
+// Провайдер, который будем использовать везде
+final nytBooksProvider = 
+  StateNotifierProvider<NytBooksNotifier, NytBooksState>((ref) {
+  return NytBooksNotifier();
+});
