@@ -89,7 +89,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         );
       }
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: 'Ошибка: $e');
+      state =  state.copyWith(isLoading: false, error: 'Ошибка: $e');
     }
   }
 

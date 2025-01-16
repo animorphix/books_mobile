@@ -40,9 +40,8 @@ class NytBook {
 
 class NytService {
   static const String _baseUrl = 'https://api.nytimes.com/svc/books/v3';
-  static const String _apiKey = '76a1hTmPdGf7GyXgBl4y6JMGdzmIDODW'; // <-- Ваш NYT-ключ
+  static const String _apiKey = '76a1hTmPdGf7GyXgBl4y6JMGdzmIDODW'; 
 
-  // Уже существующий метод:
   static Future<List<NytBook>> fetchBestSellerBooks({
     String listName = 'hardcover-fiction',
   }) async {
@@ -66,8 +65,6 @@ class NytService {
     }
   }
 
-  // Новый метод: попытка получить информацию о книге по ISBN
-  // через /lists/best-sellers/history.json?isbn=...
   static Future<NytBook?> fetchBookByIsbn(String isbn) async {
     final url = Uri.parse('$_baseUrl/lists/best-sellers/history.json?isbn=$isbn&api-key=$_apiKey');
         print(url);

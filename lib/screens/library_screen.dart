@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_books_app/providers/reading_status_provider.dart';
+import 'package:flutter_books_app/services/nyt/nyt_book_details_screen.dart';
 import 'package:flutter_books_app/services/nyt/nyt_provider.dart';
 import 'package:flutter_books_app/services/nyt/nyt_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -78,6 +79,14 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                     title: Text(book.title),
                     subtitle: Text('${book.author}\nСтатус: ${status.status}'),
                     isThreeLine: true,
+                    onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => NytBookDetailsScreen(book: book),
+                          ),
+                        );
+                    },
                     trailing: IconButton(
                       icon: const Icon(Icons.delete),
                       onPressed: () {
