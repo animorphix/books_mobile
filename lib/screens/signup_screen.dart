@@ -47,11 +47,31 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
             if (authState.isLoading) const LinearProgressIndicator(),
             TextField(
               controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: BorderSide.none,
+                ),
+                
+                filled: true,
+                hintStyle: TextStyle(color: Colors.grey[800]),
+                hintText: "E-mail",
+                fillColor: const Color.fromARGB(255, 253, 238, 255),
+              ),
             ),
+            const SizedBox(height: 16),
             TextField(
               controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Пароль'),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: BorderSide.none,
+                ),
+                filled: true,
+                hintStyle: TextStyle(color: Colors.grey[800]),
+                hintText: "Пароль",
+                fillColor: const Color.fromARGB(255, 253, 238, 255),
+              ),
               obscureText: true,
             ),
             const SizedBox(height: 16),

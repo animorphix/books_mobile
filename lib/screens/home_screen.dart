@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_books_app/providers/auth_provider.dart';
 import 'package:flutter_books_app/services/nyt/nyt_book_details_screen.dart';
 import 'package:flutter_books_app/services/nyt/nyt_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,21 +12,21 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     ref.read(nytBooksProvider.notifier).loadBooks();
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     final nytState = ref.watch(nytBooksProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Home')),
+      appBar: AppBar(
+        title: const Text('Рекомендации'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person_4_rounded),
+            onPressed: () => Navigator.pushNamed(context, '/profile'),
+            color: Colors.grey.shade700,
+          ),
+        ],
+      ),
       body: Column(
         children: [
           if (nytState.isLoading) const LinearProgressIndicator(),
@@ -41,7 +42,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 final book = nytState.books[index];
                 return ListTile(
                   leading: book.imageUrl.isNotEmpty
-                      ? Image.network(book.imageUrl, width: 50, fit: BoxFit.cover)
+                      ? Image.network(book.imageUrl,
+                          width: 50, fit: BoxFit.cover)
                       : const SizedBox(width: 50),
                   title: Text(book.title),
                   subtitle: Text(book.author),
@@ -67,7 +69,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             onPressed: () {
               Navigator.pushNamed(context, '/library');
             },
-            child: const Icon(Icons.library_books),
+            child: Icon(
+              Icons.library_books,
+              color: Colors.grey.shade700,
+            ),
           ),
           // const SizedBox(height: 16),
           // FloatingActionButton(

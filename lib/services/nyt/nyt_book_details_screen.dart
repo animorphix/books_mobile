@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_books_app/providers/auth_provider.dart';
 import 'package:flutter_books_app/providers/book_comments_provider.dart';
@@ -16,7 +19,7 @@ class NytBookDetailsScreen extends ConsumerStatefulWidget {
 }
 
 class _NytBookDetailsScreenState extends ConsumerState<NytBookDetailsScreen> {
-  final List<String> _possibleStatuses = ['not read', 'reading', 'read'];
+  final List<String> _possibleStatuses = ['хочу прочитать', 'читаю', 'прочитал'];
   String? _currentStatus;
   int? _readingStatusId;
   final _commentController = TextEditingController();
@@ -32,7 +35,7 @@ class _NytBookDetailsScreenState extends ConsumerState<NytBookDetailsScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadStatus();
-      ref.read(commentProvider.notifier).fetchComments();
+      ref.refresh(commentProvider.notifier).fetchBookComments(_isbnForStatus);
     });
   }
 
@@ -48,6 +51,9 @@ class _NytBookDetailsScreenState extends ConsumerState<NytBookDetailsScreen> {
       );
       _readingStatusId = found.id;
       _currentStatus = found.status;
+    } catch (e) {
+      _currentStatus = null;
+      log(e.toString());
     } finally {
       setState(() => _isLoadingStatus = false);
     }
@@ -83,8 +89,7 @@ class _NytBookDetailsScreenState extends ConsumerState<NytBookDetailsScreen> {
     final authState = ref.watch(authProvider);
 
     final commentsState = ref.watch(commentProvider);
-    final myComments =
-        commentsState.comments.where((c) => c.isbn == _isbnForStatus).toList();
+    final myComments = commentsState.bookComments;
 
     return Scaffold(
       appBar: AppBar(
@@ -124,56 +129,107 @@ class _NytBookDetailsScreenState extends ConsumerState<NytBookDetailsScreen> {
             ),
             const SizedBox(height: 16),
             if (authState.token != null) ...[
-              const Text(
-                'Мой статус чтения:',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              Row(
+                children: [
+                  const Text(
+                    'Статус:',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  const SizedBox(width: 8),
+                  _isLoadingStatus
+                      ? const CircularProgressIndicator()
+                      : Container(
+                          height: 40,
+                          padding: EdgeInsets.all(5.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16.0),
+                            border: Border.all(
+                              color: Colors.grey,
+                              style: BorderStyle.solid,
+                              width: 0.80,
+                            ),
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton2(
+                              dropdownStyleData: DropdownStyleData(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16.0),
+                                ),
+                              ),
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey,
+                              ),
+                              value: _currentStatus,
+                              hint: const Text('Выберите статус'),
+                              items: _possibleStatuses.map((st) {
+                                return DropdownMenuItem(
+                                    value: st, child: Text(st));
+                              }).toList(),
+                              onChanged: _onStatusChanged,
+                            ),
+                          ),
+                        ),
+                ],
               ),
-              const SizedBox(height: 8),
-              if (_isLoadingStatus)
-                const CircularProgressIndicator()
-              else
-                DropdownButton<String>(
-                  value: _currentStatus,
-                  hint: const Text('Выберите статус'),
-                  items: _possibleStatuses.map((st) {
-                    return DropdownMenuItem(value: st, child: Text(st));
-                  }).toList(),
-                  onChanged: _onStatusChanged,
-                ),
             ],
 
             const SizedBox(height: 24),
             if (commentsState.isLoading) const LinearProgressIndicator(),
-            const Text(
-              'Комментарии:',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-
-            if (myComments.isEmpty) const Text('Нет комментариев'),
-            for (final c in myComments)
-              ListTile(
-                title: Text(c.userId.toString()),
-                subtitle: Text(c.content),
-                // Если хотим дать возможность редактировать — придётся делать кнопки
-                // trailing: IconButton(... update/delete ...),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: const Text(
+                'Комментарии:',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, ),
               ),
+            ),
+            const SizedBox(height: 16),
 
+            if (myComments?.isEmpty ?? true) Text('Пусто...', style: TextStyle(color: Colors.grey.shade400),),
+            for (final c in myComments ?? [])
+
+
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ListTile(
+                        
+                        leading: const CircleAvatar(),
+                        iconColor: Colors.grey,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        tileColor: Colors.grey.shade100,
+                        title: Text(c.isFromCurrentUser ? 'Я' : c.user_email.toString()),
+                        subtitle: Text(c.content),
+                        // Если хотим дать возможность редактировать — придётся делать кнопки
+                        // trailing: IconButton(... update/delete ...),
+                      ),
+                    ),
+                  
             // Форма отправки нового комментария
             if (authState.token != null) ...[
               const SizedBox(height: 16),
-              TextField(
-                controller: _commentController,
-                decoration: const InputDecoration(
-                  hintText: 'Оставьте комментарий...',
-                  border: OutlineInputBorder(),
-                ),
-                maxLines: null,
-              ),
-              const SizedBox(height: 8),
-              ElevatedButton(
-                onPressed: _sendComment,
-                child: const Text('Отправить'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const SizedBox(width: 16),
+                  Flexible(
+                    child: TextField(
+                      controller: _commentController,
+                      decoration: InputDecoration(
+                        hintText: 'Оставьте комментарий...',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                      ),
+                      //maxLines: null,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                    child: IconButton(
+                      onPressed: _sendComment,
+                      icon: const Icon(Icons.send_rounded),
+                    ),
+                  ),
+                ],
               ),
             ]
           ],

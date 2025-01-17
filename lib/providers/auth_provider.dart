@@ -59,7 +59,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       } else {
         state = state.copyWith(
           isLoading: false,
-          error: 'Ошибка регистрации: ${response.statusCode}',
+          error: 'Ошибка регистрации: ${response.body}',
         );
       }
     } catch (e) {
@@ -85,7 +85,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       } else {
         state = state.copyWith(
           isLoading: false,
-          error: 'Ошибка входа: ${response.statusCode}',
+          error: 'Ошибка входа: ${response.body}',
         );
       }
     } catch (e) {
@@ -109,7 +109,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       } else {
         state = state.copyWith(
           isLoading: false,
-          error: 'Ошибка выхода: ${response.statusCode}',
+          error: 'Ошибка выхода: ${response.body}',
         );
       }
     } catch (e) {

@@ -11,14 +11,14 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-
-    @override
+  @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(nytBooksProvider.notifier).loadBooks();
     });
   }
+
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -57,11 +57,31 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             if (authState.isLoading) const LinearProgressIndicator(),
             TextField(
               controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: BorderSide.none,
+                ),
+                
+                filled: true,
+                hintStyle: TextStyle(color: Colors.grey[800]),
+                hintText: "Логин",
+                fillColor: const Color.fromARGB(255, 253, 238, 255),
+              ),
             ),
+            const SizedBox(height: 16),
             TextField(
               controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Пароль'),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: BorderSide.none,
+                ),
+                filled: true,
+                hintStyle: TextStyle(color: Colors.grey[800]),
+                hintText: "Пароль",
+                fillColor: const Color.fromARGB(255, 253, 238, 255),
+              ),
               obscureText: true,
             ),
             const SizedBox(height: 16),

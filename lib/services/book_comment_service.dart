@@ -7,12 +7,16 @@ class CommentModel {
   final int userId;
   final String isbn;
   final String content;
+  final String user_email;
+  final bool isFromCurrentUser;
 
   CommentModel({
     required this.id,
     required this.userId,
     required this.isbn,
     required this.content,
+    required this.user_email,
+    required this.isFromCurrentUser,
   });
 
   factory CommentModel.fromJson(Map<String, dynamic> json) {
@@ -21,6 +25,8 @@ class CommentModel {
       userId: json['user_id'],
       isbn: json['isbn'],
       content: json['content'],
+      user_email: json['user_email'],
+      isFromCurrentUser: json['current_user'],
     );
   }
 }
@@ -34,8 +40,22 @@ class CommentService {
   // и т.д.
 
   // Получить все комментарии текущего пользователя
-  static Future<http.Response> getComments({required String token}) async {
+  static Future<http.Response> getUserComments({required String token}) async {
     final url = Uri.parse('$baseUrl/comments');
+    return http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+  }
+
+  // Получить комментарии к одной книге
+  static Future<http.Response> getBookComments({
+    required String token,
+    required String isbn,
+  }) async{
+    final url = Uri.parse('$baseUrl/comments?isbn=$isbn');
     return http.get(
       url,
       headers: {
