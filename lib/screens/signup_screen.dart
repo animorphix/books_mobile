@@ -22,10 +22,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
     final authState = ref.read(authProvider);
     if (authState.token != null && authState.error == null) {
-      // Успешно, переходим на домашнюю страницу
       Navigator.pushReplacementNamed(context, '/home');
     } else {
-      // Обработка ошибки, если нужно
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(authState.error ?? 'Ошибка регистрации'),

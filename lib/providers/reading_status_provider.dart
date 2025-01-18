@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/api_service.dart';
 import 'auth_provider.dart';
 
-// Модель статуса чтения (упрощённая)
 class ReadingStatus {
   final int id;
   final int userId;
@@ -72,7 +71,6 @@ class ReadingStatusNotifier extends StateNotifier<ReadingStatusState> {
 
       if (response.statusCode == 200) {
         final decoded = jsonDecode(response.body);
-        // В соответствии с API, ответ может быть списком
         final List list = decoded;
         final statuses = list
             .map((json) => ReadingStatus.fromJson(json))
@@ -105,7 +103,6 @@ class ReadingStatusNotifier extends StateNotifier<ReadingStatusState> {
         status: statusStr,
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
-        // Успешно создан, подгружаем заново список
         await fetchReadingStatuses();
       } else {
         state = state.copyWith(
@@ -132,7 +129,6 @@ class ReadingStatusNotifier extends StateNotifier<ReadingStatusState> {
         newStatus: newStatus,
       );
       if (response.statusCode == 200) {
-        // Успешно обновили, подгружаем заново список
         await fetchReadingStatuses();
       } else {
         state = state.copyWith(
@@ -158,7 +154,6 @@ class ReadingStatusNotifier extends StateNotifier<ReadingStatusState> {
         statusId: statusId,
       );
       if (response.statusCode == 204) {
-        // Успешно удалили, подгружаем заново список
         await fetchReadingStatuses();
       } else {
         state = state.copyWith(
@@ -171,7 +166,6 @@ class ReadingStatusNotifier extends StateNotifier<ReadingStatusState> {
   }
 }
 
-// Провайдер
 final readingStatusProvider =
     StateNotifierProvider<ReadingStatusNotifier, ReadingStatusState>(
         (ref) => ReadingStatusNotifier(ref));

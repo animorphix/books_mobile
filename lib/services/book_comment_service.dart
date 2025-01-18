@@ -33,11 +33,6 @@ class CommentModel {
 
 class CommentService {
   static const String baseUrl = Config.baseUrl; 
-  // Пример: GET /comments
-  //         POST /comments
-  //         PATCH /comments/:id
-  //         DELETE /comments/:id
-  // и т.д.
 
   // Получить все комментарии текущего пользователя
   static Future<http.Response> getUserComments({required String token}) async {

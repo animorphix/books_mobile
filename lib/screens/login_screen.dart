@@ -31,7 +31,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     final authState = ref.read(authProvider);
     if (authState.token != null && authState.error == null) {
-      // Успешно, переходим на домашнюю
       Navigator.pushReplacementNamed(context, '/home');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

@@ -199,8 +199,8 @@ class _NytBookDetailsScreenState extends ConsumerState<NytBookDetailsScreen> {
                         tileColor: Colors.grey.shade100,
                         title: Text(c.isFromCurrentUser ? 'Я' : c.user_email.toString()),
                         subtitle: Text(c.content),
-                        // Если хотим дать возможность редактировать — придётся делать кнопки
-                        // trailing: IconButton(... update/delete ...),
+                        // TODO: Если хотим дать возможность редактировать — придётся делать кнопки
+                        // trailing: IconButton(),
                       ),
                     ),
                   

@@ -27,7 +27,6 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     final nytBooksState = ref.watch(nytBooksProvider);
     final statuses = readingStatusState.statuses;
 
-    // Будем отображать книги по статусам
     return Scaffold(
       appBar: AppBar(
         title: const Text('Моя библиотека'),

@@ -74,14 +74,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               color: Colors.grey.shade700,
             ),
           ),
-          // const SizedBox(height: 16),
-          // FloatingActionButton(
-          //   heroTag: 'nyt',
-          //   onPressed: () {
-          //     Navigator.pushNamed(context, '/nyt_books');
-          //   },
-          //   child: const Icon(Icons.book),
-          // ),
         ],
       ),
     );

@@ -89,7 +89,6 @@ class NytService {
         'primary_isbn10': '',
       };
 
-      // Если хотите достать isbn10/13:
       if (first['isbns'] != null && (first['isbns'] as List).isNotEmpty) {
         final firstIsbn = (first['isbns'] as List).first;
         if (firstIsbn is Map) {

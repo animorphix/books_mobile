@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/api_service.dart';
 
-// Класс состояния авторизации
 class AuthState {
   final bool isLoading;
   final String? token;
@@ -31,7 +30,6 @@ class AuthState {
 
 class AuthNotifier extends StateNotifier<AuthState> {
   AuthNotifier() : super(const AuthState()) {
-    // При старте приложения пробуем вычитать токен из локального хранилища
     _loadToken();
   }
 
@@ -53,7 +51,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
         final token = decoded['status']['token'];
         state = state.copyWith(isLoading: false, token: token);
 
-        // Сохраняем токен в SharedPreferences
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token);
       } else {
@@ -101,7 +98,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final response = await ApiService.logout(token: state.token!);
 
       if (response.statusCode == 200) {
-        // Удаляем токен
         final prefs = await SharedPreferences.getInstance();
         await prefs.remove('token');
 
@@ -118,7 +114,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 }
 
-// Провайдер, который будет использоваться в приложении
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   return AuthNotifier();
 });
